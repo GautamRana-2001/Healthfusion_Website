@@ -2,7 +2,10 @@ import nodemailer from "nodemailer";
 
 export async function POST(request) {
   try {
+    console.log("API: Appointment request received");
+    
     const body = await request.json();
+    console.log("API: Received data:", body);
 
     // Parse form data
     const name = String(body?.name || "").trim();
@@ -12,8 +15,11 @@ export async function POST(request) {
     const message = String(body?.message || "").trim();
     const date = String(body?.date || "").trim();
 
+    console.log("API: Parsed data:", { name, email, phone, treatment, date, message });
+
     // Validate required fields
     if (!name || !email || !phone || !treatment) {
+      console.log("API: Validation failed - missing required fields");
       return Response.json(
         { success: false, message: "Please fill in all required fields" },
         { status: 400 }
@@ -23,6 +29,7 @@ export async function POST(request) {
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log("API: Validation failed - invalid email");
       return Response.json(
         { success: false, message: "Please enter a valid email address" },
         { status: 400 }
@@ -33,7 +40,11 @@ export async function POST(request) {
     const user = process.env.EMAIL_USER;
     const pass = process.env.EMAIL_PASS;
 
+    console.log("API: Email user:", user);
+    console.log("API: Email pass configured:", pass ? "Yes" : "No");
+
     if (!user || !pass) {
+      console.log("API: Email service configuration error");
       return Response.json(
         { success: false, message: "Email service configuration error" },
         { status: 500 }
@@ -42,7 +53,7 @@ export async function POST(request) {
 
     // Optimized Gmail transporter with secure configuration
     // Note: Use Google App Password, not Gmail password (Enable 2-Step Verification)
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: { 
         user, 
@@ -53,6 +64,8 @@ export async function POST(request) {
         rejectUnauthorized: false
       }
     });
+
+    console.log("API: Transporter created successfully");
 
     // Professional HTML email template for admin
     const adminHtml = `
@@ -180,8 +193,13 @@ export async function POST(request) {
     };
 
     // Send both emails
-    await transporter.sendMail(adminMailOptions);
-    await transporter.sendMail(userMailOptions);
+    console.log("API: Sending admin email...");
+    const adminResult = await transporter.sendMail(adminMailOptions);
+    console.log("API: Admin email sent:", adminResult.messageId);
+
+    console.log("API: Sending user email...");
+    const userResult = await transporter.sendMail(userMailOptions);
+    console.log("API: User email sent:", userResult.messageId);
 
     return Response.json(
       { 
@@ -192,11 +210,32 @@ export async function POST(request) {
     );
 
   } catch (error) {
-    console.error("Email send error:", error);
+    console.error("Email send error details:", {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      stack: error.stack
+    });
+    
+    // Specific error messages based on error type
+    let errorMessage = "Failed to send appointment request. Please try again.";
+    
+    if (error.code === 'EAUTHENTICATION') {
+      errorMessage = "Email authentication failed. Please check your Gmail settings.";
+    } else if (error.code === 'ECONNECTION') {
+      errorMessage = "Could not connect to email server. Please try again later.";
+    } else if (error.code === 'ETIMEDOUT') {
+      errorMessage = "Email sending timed out. Please try again.";
+    } else if (error.message) {
+      errorMessage = `Error: ${error.message}`;
+    }
+    
     return Response.json(
       { 
         success: false, 
-        message: "Failed to send appointment request. Please try again." 
+        message: errorMessage,
+        error: error.message 
       },
       { status: 500 }
     );
