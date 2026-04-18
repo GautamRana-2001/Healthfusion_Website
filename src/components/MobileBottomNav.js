@@ -64,7 +64,7 @@ export default function MobileBottomNav() {
                   }
                 `}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-5 h-5" style={{ transform: item.name === "Call" ? 'rotate(90deg) scaleX(1)' : undefined }} />
                 <span className="text-[10px] font-medium">{item.name}</span>
               </a>
             );

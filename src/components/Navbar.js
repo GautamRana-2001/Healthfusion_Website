@@ -255,7 +255,7 @@ export default function Navbar() {
                 href="tel:9270216369" 
                 className="flex items-center gap-2 text-[#0077C8] font-semibold hover:text-blue-700 transition-colors"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-4 h-4" style={{ transform: 'rotate(0deg) scaleX(1)' }} />
                 92702 16369
               </a>
             </div>

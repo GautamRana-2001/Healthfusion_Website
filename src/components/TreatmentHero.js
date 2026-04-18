@@ -48,7 +48,7 @@ export default function TreatmentHero({
               href="tel:+919270216369"
               className="inline-flex items-center justify-center gap-2 bg-white text-[#0B0F19] border-2 border-gray-200 px-8 py-4 rounded-full font-semibold hover:border-[#0077C8] hover:text-[#0077C8] transition-all duration-300"
             >
-              <Phone className="w-5 h-5" />
+              <Phone className="w-5 h-5" style={{ transform: 'rotate(0deg) scaleX(1)' }} />
               Call Clinic
             </a>
           </div>

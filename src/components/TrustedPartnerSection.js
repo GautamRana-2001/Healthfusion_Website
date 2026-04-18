@@ -10,22 +10,22 @@ export default function TrustedPartnerSection() {
     {
       title: "Expert Ayurveda Treatments",
       description: "Board-certified specialists with years of experience in advanced skin and hair treatments.",
-      bgImage: "/vamana.jpg"
+      bgImage: "/expertayurveda.jpeg"
     },
     {
       title: "FDA-Approved Technology",
       description: "Latest medical equipment and proven treatment methods for safe, effective results.",
-      bgImage: "/shirodhara1.jpg"
+      bgImage: "/FDA.jpeg"
     },
     {
       title: "Personalized Care",
       description: "Customized treatment plans designed specifically for your unique skin and hair concerns.",
-      bgImage: "/skin-care.jpg"
+      bgImage: "/personalizedcare.jpeg"
     },
     {
       title: "Proven Results",
       description: "Thousands of satisfied patients with transformative results and renewed confidence.",
-      bgImage: "/Shirodhara.png"
+      bgImage: "/provenresults.jpeg"
     }
   ];
 
@@ -162,7 +162,7 @@ export default function TrustedPartnerSection() {
         </div>
 
         {/* Trust Badges */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
+        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
           {[
             { number: "15+", label: "Years Experience" },
             { number: "50K+", label: "Happy Patients" },
@@ -174,7 +174,7 @@ export default function TrustedPartnerSection() {
               <div className="text-sm text-gray-600">{stat.label}</div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   );

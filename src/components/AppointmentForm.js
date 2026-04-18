@@ -93,27 +93,30 @@ export default function AppointmentForm() {
       const payload = {
         name: values.name.trim(),
         email: values.email.trim(),
-        mobile: values.mobile.replace(/\D/g, ""),
+        phone: values.mobile.replace(/\D/g, ""),
         treatment: values.treatment,
         date: values.date,
-        notes: values.notes.trim(),
+        message: values.notes.trim(),
       };
 
-      console.log("[AppointmentForm] Submitting payload:", payload);
+      // Add timeout for better UX
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const res = await fetch("/api/send-appointment", {
+      const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const data = await res.json().catch(() => ({}));
 
-      console.log("[AppointmentForm] API response:", res.status, data);
-
       if (!res.ok || data?.success !== true) {
         throw new Error(
-          data?.error || "Failed to submit appointment request."
+          data?.message || "Failed to submit appointment request."
         );
       }
 
@@ -128,7 +131,11 @@ export default function AppointmentForm() {
       });
       setTouched({});
     } catch (err) {
-      setSubmitError(err?.message || "Something went wrong. Please try again.");
+      if (err.name === 'AbortError') {
+        setSubmitError("Request timed out. Please check your connection and try again.");
+      } else {
+        setSubmitError(err?.message || "Something went wrong. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }

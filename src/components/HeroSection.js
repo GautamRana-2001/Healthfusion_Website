@@ -108,7 +108,7 @@ export default function HeroSection() {
             </div>
 
             {/* Slider Dots */}
-            <div className="flex gap-2 mt-8">
+            {/* <div className="flex gap-2 mt-8">
               {slides.map((_, index) => (
                 <button
                   key={index}
@@ -121,7 +121,7 @@ export default function HeroSection() {
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

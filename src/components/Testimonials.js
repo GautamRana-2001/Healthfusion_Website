@@ -14,14 +14,14 @@ export default function Testimonials() {
     {
       name: "Rahul Verma",
       city: "Nashik",
-      rating: 5,
+      rating: 4,
       review: "Got my hair transplant done here and the results are amazing. The procedure was painless and the staff was very supportive throughout. Best decision I ever made for my confidence!",
       treatment: "Hair Transplant",
     },
     {
       name: "Sneha Patel",
       city: "Satara",
-      rating: 5,
+      rating: 4,
       review: "The laser hair removal treatment was quick and effective. After just a few sessions, I noticed significant reduction. The clinic uses top-notch technology and maintains high hygiene standards.",
       treatment: "Laser Hair Removal",
     },

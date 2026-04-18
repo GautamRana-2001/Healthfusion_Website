@@ -57,7 +57,7 @@ export default function WhyChooseUs() {
             </p>
             
             {/* Stats Row */}
-            <div className="flex gap-8">
+            {/* <div className="flex gap-8">
               <div>
                 <p className="text-4xl font-bold text-[#00A651]">15+</p>
                 <p className="text-gray-600">Years Experience</p>
@@ -70,7 +70,7 @@ export default function WhyChooseUs() {
                 <p className="text-4xl font-bold text-[#00A651]">50+</p>
                 <p className="text-gray-600">Expert Doctors</p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Grid */}
