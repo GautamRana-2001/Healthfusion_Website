@@ -13,7 +13,7 @@ export const treatments = {
     {
       name: "Agnikarma",
       slug: "/ayurveda/agnikarma",
-      image: "/Gallery/agnikarma.jpeg"
+      image: "/Gallery/Agnikarma.jpeg"
     },
     {
       name: "Viddhakarma",
@@ -23,7 +23,7 @@ export const treatments = {
     {
       name: "Suvarnaprashan",
       slug: "/ayurveda/suvarnaprashan",
-      image: "/suvarnaprashan1.png"
+      image: "/Suvarnaprashan1.png"
     },
     {
       name: "Panchakarma",
