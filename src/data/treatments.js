@@ -18,7 +18,7 @@ export const treatments = {
     {
       name: "Viddhakarma",
       slug: "/ayurveda/viddhakarma",
-      image: "/Viddhakarma2.jpg"
+      image: "/viddhakarma2.jpg"
     },
     {
       name: "Suvarnaprashan",
