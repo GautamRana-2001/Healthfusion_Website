@@ -1,11 +1,69 @@
 import nodemailer from "nodemailer";
 
+// Simple in-memory rate limiting
+const emailLimit = new Map();
+const DAILY_LIMIT = 100;
+const HOURLY_LIMIT = 30;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const userLimit = emailLimit.get(ip) || { count: 0, resetTime: now };
+  
+  // Reset daily counter if needed
+  if (now > userLimit.resetTime) {
+    userLimit.count = 0;
+    userLimit.resetTime = now + (24 * 60 * 60 * 1000); // 24 hours
+  }
+  
+  // Check hourly limit
+  const hourlyCount = userLimit.count;
+  if (hourlyCount >= HOURLY_LIMIT) {
+    return { 
+      allowed: false, 
+      message: "Too many requests. Please try again later.",
+      resetIn: Math.ceil((userLimit.resetTime - now) / (1000 * 60)) // minutes
+    };
+  }
+  
+  // Check daily limit
+  if (hourlyCount >= DAILY_LIMIT) {
+    return { 
+      allowed: false, 
+      message: "Daily email limit reached. Please try again tomorrow.",
+      resetIn: Math.ceil((userLimit.resetTime - now) / (1000 * 60 * 60)) // hours
+    };
+  }
+  
+  userLimit.count++;
+  emailLimit.set(ip, userLimit);
+  return { allowed: true };
+}
+
 export async function POST(request) {
   try {
     console.log("API: Appointment request received");
     
     const body = await request.json();
     console.log("API: Received data:", body);
+
+    // Get client IP for rate limiting
+    const clientIP = request.headers.get('x-forwarded-for') || 
+                   request.headers.get('x-real-ip') || 
+                   'unknown';
+
+    // Check rate limits
+    const rateLimitResult = checkRateLimit(clientIP);
+    if (!rateLimitResult.allowed) {
+      console.log("API: Rate limit exceeded for IP:", clientIP);
+      return Response.json(
+        { 
+          success: false, 
+          message: rateLimitResult.message,
+          resetIn: rateLimitResult.resetIn
+        },
+        { status: 429 }
+      );
+    }
 
     // Parse form data
     const name = String(body?.name || "").trim();
@@ -16,6 +74,8 @@ export async function POST(request) {
     const date = String(body?.date || "").trim();
 
     console.log("API: Parsed data:", { name, email, phone, treatment, date, message });
+    console.log("API: Treatment field received:", treatment);
+    console.log("API: Treatment type:", typeof treatment);
 
     // Validate required fields
     if (!name || !email || !phone || !treatment) {
@@ -51,7 +111,7 @@ export async function POST(request) {
       );
     }
 
-    // Optimized Gmail transporter with secure configuration
+    // Optimized Gmail transporter with connection pooling
     // Note: Use Google App Password, not Gmail password (Enable 2-Step Verification)
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -62,7 +122,13 @@ export async function POST(request) {
       secure: true,
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      // Connection pooling settings
+      pool: true,
+      maxConnections: 10,
+      maxMessages: 200,
+      rateDelta: 500, // 0.5 second between emails
+      rateLimit: 10 // max 10 emails per second
     });
 
     console.log("API: Transporter created successfully");
@@ -192,14 +258,31 @@ export async function POST(request) {
       html: userHtml,
     };
 
-    // Send both emails
+    // Send both emails with retry mechanism
     console.log("API: Sending admin email...");
-    const adminResult = await transporter.sendMail(adminMailOptions);
-    console.log("API: Admin email sent:", adminResult.messageId);
-
-    console.log("API: Sending user email...");
-    const userResult = await transporter.sendMail(userMailOptions);
-    console.log("API: User email sent:", userResult.messageId);
+    let adminResult, userResult;
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+      try {
+        adminResult = await transporter.sendMail(adminMailOptions);
+        userResult = await transporter.sendMail(userMailOptions);
+        console.log("API: Admin email sent:", adminResult.messageId);
+        console.log("API: User email sent:", userResult.messageId);
+        break; // Success, exit retry loop
+      } catch (retryError) {
+        retryCount++;
+        console.log(`API: Retry ${retryCount}/${maxRetries} failed:`, retryError.message);
+        
+        if (retryCount >= maxRetries) {
+          throw retryError; // Re-throw if max retries reached
+        }
+        
+        // Wait before retry (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
+      }
+    }
 
     return Response.json(
       { 
@@ -227,6 +310,12 @@ export async function POST(request) {
       errorMessage = "Could not connect to email server. Please try again later.";
     } else if (error.code === 'ETIMEDOUT') {
       errorMessage = "Email sending timed out. Please try again.";
+    } else if (error.code === 'EMAXIMUMCALLS' || error.message?.includes('exceeded')) {
+      errorMessage = "Gmail sending limit exceeded. Please try again in a few hours.";
+    } else if (error.code === 'EENVELOPE' || error.message?.includes('over quota')) {
+      errorMessage = "Daily email quota reached. Please try again tomorrow.";
+    } else if (error.code === 'ECONNREFUSED') {
+      errorMessage = "Email service temporarily unavailable. Please try again later.";
     } else if (error.message) {
       errorMessage = `Error: ${error.message}`;
     }

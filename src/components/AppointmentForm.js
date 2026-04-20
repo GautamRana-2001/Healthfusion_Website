@@ -245,7 +245,7 @@ export default function AppointmentForm() {
               </option>
               <option value="Dermatology">Dermatology</option>
               {/* <option value="Hair">Hair</option> */}
-              <option value="Laser">Fusion</option>
+              <option value="Fusion">Fusion</option>
               <option value="Ayurveda">Ayurveda</option>
               <option value="Other">Other</option>
             </select>

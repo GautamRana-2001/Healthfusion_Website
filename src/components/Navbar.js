@@ -215,7 +215,7 @@ export default function Navbar() {
             <div className="flex items-center gap-4 text-base">
               <div className="flex items-center gap-5 md:gap-6">
                 <a
-                  href="https://www.instagram.com/health.fusion33/"
+                  href="https://www.instagram.com/healthfusion_multispeciality?igsh=MWZpMWp5MnZlNG82Yw=="
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -242,7 +242,7 @@ export default function Navbar() {
                   <FaWhatsapp />
                 </a>
                 <a
-                  href="https://www.google.com/maps/place/Healthfusion+MultiSpecialty/@18.5610646,73.9449121,17z"
+                  href="https://maps.app.goo.gl/Kccz9ET2Qbvynz4H6?g_st=iw"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Google Maps"

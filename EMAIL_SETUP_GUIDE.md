@@ -1,4 +1,4 @@
-# Email System Setup Guide - HealthFusion Clinic
+  # Email System Setup Guide - HealthFusion Clinic
 
 ## 📧 Overview
 Optimized Nodemailer system with Gmail 2-Step Verification support for HealthFusion Clinic appointment system.
