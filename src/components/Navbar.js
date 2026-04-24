@@ -190,7 +190,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top Information Bar */}
-      <div className="bg-gray-100 text-gray-600 text-sm">
+      <div className="bg-gray-100 text-gray-600 text-sm relative z-40">
         <div className="max-w-7xl mx-auto px-6 py-2">
           <div className="flex items-center justify-between">
             {/* Left - placeholder for alignment */}
@@ -212,14 +212,14 @@ export default function Navbar() {
             </div>
 
             {/* Right - Customer Care */}
-            <div className="flex items-center gap-4 text-base">
+            <div className="flex items-center gap-4 text-base relative z-50 pointer-events-auto">
               <div className="flex items-center gap-5 md:gap-6">
                 <a
                   href="https://www.instagram.com/healthfusion_multispeciality?igsh=MWZpMWp5MnZlNG82Yw=="
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="text-lg text-pink-500 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
+                  className="text-lg text-pink-500 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md pointer-events-auto"
                 >
                   <FaInstagram />
                 </a>
@@ -228,7 +228,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="text-lg text-blue-600 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
+                  className="text-lg text-blue-600 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md pointer-events-auto"
                 >
                   <FaFacebookF />
                 </a>
@@ -237,7 +237,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"
-                  className="text-lg text-green-500 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
+                  className="text-lg text-green-500 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md pointer-events-auto"
                 >
                   <FaWhatsapp />
                 </a>
@@ -246,14 +246,14 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Google Maps"
-                  className="text-lg text-red-500 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
+                  className="text-lg text-red-500 cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-md pointer-events-auto"
                 >
                   <FaMapMarkerAlt />
                 </a>
               </div>
               <a 
                 href="tel:9270216369" 
-                className="flex items-center gap-2 text-[#0077C8] font-semibold hover:text-blue-700 transition-colors"
+                className="flex items-center gap-2 text-[#0077C8] font-semibold hover:text-blue-700 transition-colors pointer-events-auto"
               >
                 <Phone className="w-4 h-4" style={{ transform: 'rotate(0deg) scaleX(1)' }} />
                 92702 16369
@@ -491,7 +491,7 @@ export default function Navbar() {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden fixed inset-0 top-[120px] bg-white z-50 overflow-y-auto">
+            <div className="lg:hidden fixed inset-x-0 top-[120px] bottom-0 bg-white z-50 overflow-y-auto">
               <div className="p-6">
 
                 {/* Mobile Menu Items */}
